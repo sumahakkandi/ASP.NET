@@ -1,0 +1,58 @@
+using NationalCaseStudy.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using System.Windows.Forms;
+using System.Web.Security;
+
+namespace NationalCaseStudy.Controllers
+{
+    public class LoginController : Controller
+    {
+        casestudyEntities db = new casestudyEntities();
+        // GET: Login
+        //public ActionResult Index()
+        //{
+        //    return View();
+        //}
+
+        [HttpGet]
+        public ActionResult UserLogin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UserLogin(login UserAuthenticate)
+        {
+            if (ModelState.IsValid)
+            {
+               
+                    var obj = db.logins.Where(a => a.username.Equals(UserAuthenticate.username) && a.passwords.Equals(UserAuthenticate.passwords)).FirstOrDefault();
+                    if (obj != null)
+                    {
+                        Session["UserID"] = obj.login_id;
+                        Session["UserName"] = obj.username.ToString();
+                        //Session["Name"] = obj.tblPatientDetail.cFirstName + " " + obj.tblPatientDetail.cLastName;
+                        return RedirectToAction("Sample");
+                    }
+                else
+                {
+                    MessageBox.Show("Login Credentials are incorrect please try again");
+                }
+
+
+            }
+            
+            return  View(UserAuthenticate);
+        }
+
+        public ActionResult Sample()
+        {
+            return View();
+        }
+
+    }
+}
